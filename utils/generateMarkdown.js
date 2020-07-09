@@ -1,28 +1,37 @@
-function generateMarkdown(data) {
+function generateMarkdown(data, response) {
   return `
-# [${data.title}](https://github.com/${data.accountname}/${data.title})
-![Most recent commit](https://img.shields.io/github/last-commit/${data.accountname}/${data.title})
+# ${data.title}
+# Table of Contents:
+1. [Description](#description)
+2. [Contents](#contents)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Licensing](#license)nod
+6. [Contributions](#contributions)
+7. [Test](#test)
+8. [Questions](#questions)
 ## Description
-${data.description}
-## Table of Contents
-* [Installation](##Installation)
-* [Usage](##Usage)
-* [License](##License)
-* [Tests](##Tests) 
-* [Contribute](##Contribute)
+${data.Description}
+## Contents
+${data.contents}
 ## Installation
-${data.install}
+${data.installation}
 ## Usage
-${data.use}
+${data.usage}
 ## License
 ${data.license}
-## Tests
+## Contributions
+${data.contributions}
+## Test
 ${data.test}
-## Contribute
-${data.contribute}
-## Support
-<img src="${data.image}" width="200" height="200"/>
-<br/>Email ${data.name} with any support questions at ${data.accountemail}
+## Questions
+${data.questions}
+## Badge(s)
+![Badge](${data.badge})
+## Questions
+<img src="${response.data.avatar_url}" height="100" width="75">
+
+${response.data.email}
 `;
 }
 

@@ -1,74 +1,82 @@
-const fs = require("fs");
-const util = require("util");
 const inquirer = require("inquirer");
+const fs = require("fs");
 const api = require("./utils/api.js");
 const generateMarkdown = require("./utils/generateMarkdown.js");
+const axios = require("axios");
+// let questions =
 
-const writeFileAsync = util.promisify(fs.writeFile)
 
-function askUser() {
-	return inquirer.prompt([
-		{
-			type: "input",
-			message: "What is your github username?",
-			name: "accountname"
+function questions(){
+ return inquirer.prompt([
+    {
+        message: "Enter your GitHub username:",
+        name: "username"
     },
     {
-			type: "input",
-			message: "What is your github email address?",
-			name: "accountemail"
-		},
-		{
-			type: "input",
-			message: "What is the name of the project repository?",
-			name: "title"
-		},
-		{
-			type: "input",
-			message: "Desribe your project.",
-			name: "description"
-		},
-		{
-			type: "input",
-			message: "How do you install this project?",
-			name: "install"
-		},
-		{
-			type: "input",
-			message: "How do you use this project?",
-			name: "use"
-		},
-		{
-			type: "input",
-			message: "What license is used for this project?:",
-			name: "license"
-		},
-		{
-			type: "input",
-			message: "How is this project tested?",
-			name: "test"
-		},
-		{
-			type: "input",
-			message: "Lastly, how can someone contribute to this project?",
-			name: "contribute"
-		},
-	]);
+        message: "What is the tittle of your project ",
+        name: "title"
+    },
+    {
+        message: "Please provide a detailed description of your project",
+        name: "Description"
+    },
+    {
+        type: "input",
+        name: "contents",
+        message: "What are the contents of the project?"
+    },
+    {
+        message: 'What are the steps required to install your project?  ',
+        name: 'Installation'
+    },
+    {
+        message: "How to use the program ",
+        name: "usage"
+    },
+    {
+        message: "Provide all the licenses for he project",
+        name: "license"
+    },
+    {
+        messages: "list all the contributors for the project",
+        name: "contributors"
+    },
+    {
+        type: "input",
+        name: "test",
+        message: "How do you test the project?"
+    },
+    {
+        type: "input",
+        name: "badge",
+        message: "Place shield.io badge URL here to include!"
+    }
+])}
+
+function generate(data,lee ) {
+    fs.writeFile('README.md', generateMarkdown(data, lee), (err) => {
+        if (err) {
+            throw err;
+        }
+    })
 }
 
 async function init() {
-	try {
-		const readmefile = await askUser();
-		await api.getUser(readmefile.accountname).then(function (result) {
-			readmefile.image = result.data.avatar_url;
-			readmefile.name = result.data.name;
-		});
-		const mdfile = generateMarkdown(readmefile);
-		await writeFileAsync("output/README.md", mdfile);
-		console.log("README.md created");
-	} catch (err) {
-		console.log("Error: " + err);
-	}
+    console.log("hi")
+    try {
+        const answers = await questions();
+
+        const README = await api(answers.username);
+
+        await generate(answers, README);
+
+        console.log("Successfully generated README.md");
+    } catch (err) {
+        console.log(err);
+    }
+
 }
 
-init()
+init();
+
+
